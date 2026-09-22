@@ -19,6 +19,7 @@ struct ContentView: View {
     @ObservedObject var webcamManager = WebcamManager.shared
 
     @ObservedObject var coordinator = BoringViewCoordinator.shared
+    @ObservedObject var islandCenter = IslandCenter.shared
     @ObservedObject var musicManager = MusicManager.shared
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var brightnessManager = BrightnessManager.shared
@@ -58,14 +59,29 @@ struct ContentView: View {
         )
     }
 
+    private var closedIslandItem: IslandItem? {
+        guard vm.notchState == .closed, let item = islandCenter.visible else { return nil }
+        if case .battery = item.builtin, !Defaults[.showPowerStatusNotifications] { return nil }
+        if case .hud = item.builtin, !Defaults[.hudReplacement] { return nil }
+        return item
+    }
+
     private var computedChinWidth: CGFloat {
         var chinWidth: CGFloat = vm.closedNotchSize.width
 
-        if coordinator.expandingView.type == .battery && coordinator.expandingView.show
-            && vm.notchState == .closed && Defaults[.showPowerStatusNotifications]
-        {
-            chinWidth = 640
-        } else if (!coordinator.expandingView.show || coordinator.expandingView.type == .music)
+        if let item = closedIslandItem {
+            if case .battery = item.builtin {
+                return 640
+            }
+            if item.builtin == nil {
+                return vm.closedNotchSize.width + 258
+            }
+            if case .hud = item.builtin, Defaults[.inlineHUD] {
+                return vm.closedNotchSize.width + 220
+            }
+        }
+
+        if (!coordinator.expandingView.show || coordinator.expandingView.type == .music)
             && vm.notchState == .closed && (musicManager.isPlaying || !musicManager.isPlayerIdle)
             && coordinator.musicLiveActivityEnabled && !vm.hideOnClosed
         {
@@ -257,9 +273,9 @@ struct ContentView: View {
                     .padding(.top, 40)
                     Spacer()
                 } else {
-                    if coordinator.expandingView.type == .battery && coordinator.expandingView.show
-                        && vm.notchState == .closed && Defaults[.showPowerStatusNotifications]
-                    {
+                    if let item = closedIslandItem, item.builtin == nil {
+                        IslandGenericCompact(item: item)
+                      } else if let item = closedIslandItem, case .battery = item.builtin {
                         HStack(spacing: 0) {
                             HStack {
                                 Text(batteryModel.statusText)
@@ -284,8 +300,8 @@ struct ContentView: View {
                             .frame(width: 76, alignment: .trailing)
                         }
                         .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
-                      } else if coordinator.sneakPeek.show && Defaults[.inlineHUD] && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && vm.notchState == .closed {
-                          InlineHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
+                      } else if let item = closedIslandItem, case .hud = item.builtin, Defaults[.inlineHUD] {
+                          IslandInlineHUDHost(item: item, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
                               .transition(.opacity)
                       } else if (!coordinator.expandingView.show || coordinator.expandingView.type == .music) && vm.notchState == .closed && (musicManager.isPlaying || !musicManager.isPlayerIdle) && coordinator.musicLiveActivityEnabled && !vm.hideOnClosed {
                           MusicLiveActivity()
@@ -300,29 +316,12 @@ struct ContentView: View {
                            Rectangle().fill(.clear).frame(width: vm.closedNotchSize.width - 20, height: vm.effectiveClosedNotchHeight)
                        }
 
+                      if let item = closedIslandItem, case .hud = item.builtin, !Defaults[.inlineHUD] {
+                          IslandStandardHUDHost(item: item)
+                      }
+
                       if coordinator.sneakPeek.show {
-                          if (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && !Defaults[.inlineHUD] && vm.notchState == .closed {
-                              SystemEventIndicatorModifier(
-                                  eventType: $coordinator.sneakPeek.type,
-                                  value: $coordinator.sneakPeek.value,
-                                  icon: $coordinator.sneakPeek.icon,
-                                  sendEventBack: { newVal in
-                                      switch coordinator.sneakPeek.type {
-                                      case .volume:
-                                          VolumeManager.shared.setAbsolute(Float32(newVal))
-                                      case .brightness:
-                                          BrightnessManager.shared.setAbsolute(value: Float32(newVal))
-                                      default:
-                                          break
-                                      }
-                                  }
-                              )
-                              .padding(.bottom, 10)
-                              .padding(.leading, 4)
-                              .padding(.trailing, 8)
-                          }
-                          // Old sneak peek music
-                          else if coordinator.sneakPeek.type == .music {
+                          if coordinator.sneakPeek.type == .music {
                               if vm.notchState == .closed && !vm.hideOnClosed && Defaults[.sneakPeekStyles] == .standard {
                                   HStack(alignment: .center) {
                                       Image(systemName: "music.note")
@@ -337,7 +336,7 @@ struct ContentView: View {
                       }
                   }
               }
-              .conditionalModifier((coordinator.sneakPeek.show && (coordinator.sneakPeek.type == .music) && vm.notchState == .closed && !vm.hideOnClosed && Defaults[.sneakPeekStyles] == .standard) || (coordinator.sneakPeek.show && (coordinator.sneakPeek.type != .music) && (vm.notchState == .closed))) { view in
+              .conditionalModifier((coordinator.sneakPeek.show && (coordinator.sneakPeek.type == .music) && vm.notchState == .closed && !vm.hideOnClosed && Defaults[.sneakPeekStyles] == .standard) || (closedIslandItem != nil && vm.notchState == .closed)) { view in
                   view
                       .fixedSize()
               }

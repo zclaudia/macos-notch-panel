@@ -12,6 +12,7 @@ struct BoringHeader: View {
     @EnvironmentObject var vm: BoringViewModel
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = BoringViewCoordinator.shared
+    @ObservedObject var islandCenter = IslandCenter.shared
     @StateObject var tvm = ShelfStateViewModel.shared
     var body: some View {
         HStack(spacing: 0) {
@@ -38,8 +39,8 @@ struct BoringHeader: View {
 
             HStack(spacing: 4) {
                 if vm.notchState == .open {
-                    if isHUDType(coordinator.sneakPeek.type) && coordinator.sneakPeek.show && Defaults[.showOpenNotchHUD] {
-                        OpenNotchHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon)
+                    if Defaults[.showOpenNotchHUD], let item = islandCenter.visible, case .hud = item.builtin, Defaults[.hudReplacement] {
+                        IslandOpenHUDHost(item: item)
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                     } else {
                         if Defaults[.showMirror] {
@@ -100,15 +101,6 @@ struct BoringHeader: View {
         }
         .foregroundColor(.gray)
         .environmentObject(vm)
-    }
-
-    func isHUDType(_ type: SneakContentType) -> Bool {
-        switch type {
-        case .volume, .brightness, .backlight, .mic:
-            return true
-        default:
-            return false
-        }
     }
 }
 

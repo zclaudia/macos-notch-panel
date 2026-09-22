@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E1A11A010000000000000012 /* IslandCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A11A010000000000000011 /* IslandCenter.swift */; };
+		E1A11A010000000000000014 /* IslandSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A11A010000000000000013 /* IslandSocketServer.swift */; };
+		E1A11A010000000000000016 /* IslandCompactSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A11A010000000000000015 /* IslandCompactSlot.swift */; };
+		E1A11A010000000000000023 /* IslandKit in Frameworks */ = {isa = PBXBuildFile; productRef = E1A11A010000000000000022 /* IslandKit */; };
 		1100290C2E847E2800035A57 /* NSItemProvider+LoadHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100290B2E847E2800035A57 /* NSItemProvider+LoadHelpers.swift */; };
 		110029272E84FD4C00035A57 /* TemporaryFileStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110029262E84FD4C00035A57 /* TemporaryFileStorageService.swift */; };
 		1100292A2E8691B400035A57 /* FileShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110029292E8691B400035A57 /* FileShareView.swift */; };
@@ -228,6 +232,9 @@
 		11C5E3112DFE85970065821E /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		11C5E3152DFE88510065821E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		11CC44A12CEE614100C7244B /* BoringViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoringViewCoordinator.swift; sourceTree = "<group>"; };
+		E1A11A010000000000000011 /* IslandCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandCenter.swift; sourceTree = "<group>"; };
+		E1A11A010000000000000013 /* IslandSocketServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandSocketServer.swift; sourceTree = "<group>"; };
+		E1A11A010000000000000015 /* IslandCompactSlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IslandCompactSlot.swift; sourceTree = "<group>"; };
 		11CFC65A2E097E9D00748C80 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		11CFC65E2E097F2100748C80 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		11CFC6602E097F6800748C80 /* PermissionsRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsRequestView.swift; sourceTree = "<group>"; };
@@ -350,6 +357,7 @@
 				B18654392C6F4990000B926A /* KeyboardShortcuts in Frameworks */,
 				B19016222CC15B3D00E3F12E /* Defaults in Frameworks */,
 				111BE95D2ECD71E10079DD4E /* AsyncXPCConnection in Frameworks */,
+				E1A11A010000000000000023 /* IslandKit in Frameworks */,
 				B1628B922CC260C0003D8DF3 /* SwiftUIIntrospect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -584,8 +592,19 @@
 				14CEF41B2C5CAED400855D72 /* Preview Content */,
 				112FB72F2CCF12CC0015238C /* private */,
 				11CC44A12CEE614100C7244B /* BoringViewCoordinator.swift */,
+				E1A11A010000000000000017 /* island */,
 			);
 			path = boringNotch;
+			sourceTree = "<group>";
+		};
+		E1A11A010000000000000017 /* island */ = {
+			isa = PBXGroup;
+			children = (
+				E1A11A010000000000000011 /* IslandCenter.swift */,
+				E1A11A010000000000000013 /* IslandSocketServer.swift */,
+				E1A11A010000000000000015 /* IslandCompactSlot.swift */,
+			);
+			path = island;
 			sourceTree = "<group>";
 		};
 		14CEF41B2C5CAED400855D72 /* Preview Content */ = {
@@ -814,6 +833,7 @@
 				111BEA502ECFBF7F0079DD4E /* MacroVisionKit */,
 				111BEA5E2ED07A340079DD4E /* MacroVisionKit */,
 				111BEA6E2ED166E20079DD4E /* MacroVisionKit */,
+				E1A11A010000000000000022 /* IslandKit */,
 			);
 			productName = dynamicNotch;
 			productReference = 14CEF4122C5CAED300855D72 /* boringNotch.app */;
@@ -859,6 +879,7 @@
 				11F748712EC9DA9300F841DB /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				111BE95B2ECD71E10079DD4E /* XCRemoteSwiftPackageReference "AsyncXPCConnection" */,
 				111BEA6D2ED166E20079DD4E /* XCRemoteSwiftPackageReference "MacroVisionKit" */,
+				E1A11A010000000000000021 /* XCLocalSwiftPackageReference "IslandKit" */,
 			);
 			productRefGroup = 14CEF4132C5CAED300855D72 /* Products */;
 			projectDirPath = "";
@@ -911,6 +932,9 @@
 				1100292A2E8691B400035A57 /* FileShareView.swift in Sources */,
 				147163982C5D35B70068B555 /* MusicVisualizer.swift in Sources */,
 				11CC44A22CEE614100C7244B /* BoringViewCoordinator.swift in Sources */,
+				E1A11A010000000000000012 /* IslandCenter.swift in Sources */,
+				E1A11A010000000000000014 /* IslandSocketServer.swift in Sources */,
+				E1A11A010000000000000016 /* IslandCompactSlot.swift in Sources */,
 				B186543C2C6F49AE000B926A /* ShortcutConstants.swift in Sources */,
 				11A45C792E34E63100CEB175 /* MediaChecker.swift in Sources */,
 				B1D365CE2C6A979C0047BDBC /* LiveActivityModifier.swift in Sources */,
@@ -1347,6 +1371,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E1A11A010000000000000021 /* XCLocalSwiftPackageReference "IslandKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = IslandKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		111BE95B2ECD71E10079DD4E /* XCRemoteSwiftPackageReference "AsyncXPCConnection" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1439,6 +1470,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E1A11A010000000000000022 /* IslandKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A11A010000000000000021 /* XCLocalSwiftPackageReference "IslandKit" */;
+			productName = IslandKit;
+		};
 		111BE95C2ECD71E10079DD4E /* AsyncXPCConnection */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 111BE95B2ECD71E10079DD4E /* XCRemoteSwiftPackageReference "AsyncXPCConnection" */;

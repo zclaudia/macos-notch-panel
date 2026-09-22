@@ -2,6 +2,7 @@ import Cocoa
 import Defaults
 import Foundation
 import IOKit.ps
+import IslandKit
 import SwiftUI
 
 /// A view model that manages and monitors the battery status of the device
@@ -121,9 +122,27 @@ class BatteryStatusViewModel: ObservableObject {
     /// Notifies important changes in the battery status with an optional delay
     /// - Parameter delay: The delay before notifying the change, default is 0.0
     private func notifyImportanChangeStatus(delay: Double = 0.0) {
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(for: .seconds(delay))
-            self.coordinator.toggleExpandingView(status: true, type: .battery)
+            guard Defaults[.showPowerStatusNotifications] else { return }
+            let percent = Int(self.levelBattery.rounded())
+            let title = self.statusText.isEmpty ? "Battery" : self.statusText
+            let activity = IslandActivity(
+                id: "builtin.battery",
+                priority: .high,
+                compact: IslandCompactContent(
+                    symbolName: "battery.100",
+                    title: title,
+                    trailingText: "\(percent)%",
+                    progress: min(1, max(0, Double(self.levelBattery) / 100))
+                )
+            )
+            IslandCenter.shared.present(
+                activity: activity,
+                duration: 3,
+                clientId: IslandCenter.builtinClientID,
+                builtin: .battery
+            )
         }
     }
 

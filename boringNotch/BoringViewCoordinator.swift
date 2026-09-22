@@ -209,13 +209,21 @@ class BoringViewCoordinator: ObservableObject {
         status: Bool, type: SneakContentType, duration: TimeInterval = 1.5, value: CGFloat = 0,
         icon: String = ""
     ) {
-        sneakPeekDuration = duration
         if type != .music {
-            // close()
-            if !Defaults[.hudReplacement] {
-                return
+            Task { @MainActor in
+                guard let activityID = IslandCenter.hudActivityID(type) else { return }
+                if !status {
+                    IslandCenter.shared.end(id: activityID, clientId: IslandCenter.builtinClientID)
+                    return
+                }
+                if type == .mic {
+                    self.currentMicStatus = value == 1
+                }
+                IslandCenter.shared.presentBuiltinHUD(type: type, value: value, icon: icon, duration: duration)
             }
+            return
         }
+        sneakPeekDuration = duration
         Task { @MainActor in
             withAnimation(.smooth) {
                 self.sneakPeek.show = status
@@ -223,10 +231,6 @@ class BoringViewCoordinator: ObservableObject {
                 self.sneakPeek.value = value
                 self.sneakPeek.icon = icon
             }
-        }
-
-        if type == .mic {
-            currentMicStatus = value == 1
         }
     }
 

@@ -82,6 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             DistributedNotificationCenter.default().removeObserver(observer)
             screenUnlockedObserver = nil
         }
+        IslandSocketServer.shared.stop()
         MusicManager.shared.destroy()
         cleanupDragDetectors()
         cleanupWindows()
@@ -280,6 +281,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        IslandSocketServer.shared.start()
 
         NotificationCenter.default.addObserver(
             self,
